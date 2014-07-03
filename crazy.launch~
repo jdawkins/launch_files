@@ -1,0 +1,13 @@
+<launch>
+	<group ns="CrazyFlie_3">
+		<rosparam command="load" file="$(find uav_control)/crazyflie_params.yaml" />
+		<node name = "Crazyflie_node" pkg = "crazyflie" type = "crazyflie_node.py" output = "screen">
+			<param name = "radio_address" value = "radio://0/10/250K" type = "string" />
+		</node>
+		<node name = "joystick" pkg = "joy" type = "joy_node"/>
+		<node name = "uav_controller" pkg = "uav_control" type = "uav_control_node"/>
+			<param name = "uav_name" value = "CrazyFlie_3" />
+			<param name = "uav_type" value = "crazyflie" />
+		<node name = "uav_planner" pkg = "uav_planner" type = "uav_planner_node" />	
+	</group>
+</launch>

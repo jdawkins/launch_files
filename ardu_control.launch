@@ -1,0 +1,39 @@
+<launch>
+
+	<node name = "Joystick_node" pkg = "joy" type = "joy_node" ns = "ArduPilot" />
+	<node name = "Uav_Control_node" pkg = "uav_control" type = "uav_control_node" ns = "ArduPilot"/>
+	<!--machine name="Ground_Station" address="192.168.1.222" /-->
+	<!--machine name="Quad" address="192.168.1.112" user="ubuntu" env-loader="/home/ubuntu/catkin_ws/devel/env.sh"/-->
+
+	
+	<node  name = "QGC_Bridge" pkg = "qgc_ros_bridge" type = "qgc_ros_bridge_node" output = "screen">
+		<!--remap from="ArduPilot/mav_data" to="mav_data"/-->
+		<param name = "target_ip" value = "192.168.1.191" />	
+	</node>
+	
+	<node name = "ArduPilot" pkg = "ardu_pilot" type = "ardu_pilot_node" output = "screen" respawn="true" >
+		<param name = "port" value = "/dev/ttyACM0" />
+		<param name = "baud" value = "115200" type = "int" />
+		<remap from="uav_cmd" to="/ArduPilot/uav_cmd"/>
+	</node>
+
+
+	<!--node machine= "Quad" name="Hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen"> 
+    		<param name="calibrate_time" type="bool" value="false"/>     
+    		<param name="port" type="string" value="/dev/ttyACM0"/> 
+      		<param name="intensity" type="bool" value="false"/>
+  	</node-->
+
+	 <!--node machine="Ground_Station" pkg="uvc_camera" type="uvc_camera_node" name="uvc_camera" output="screen">
+   		 <param name="width" type="int" value="320" />
+		 <param name="height" type="int" value="240" />
+		 <param name="fps" type="int" value="30" />
+		 <param name="frame" type="string" value="wide_stereo" />
+		 <param name="device" type="string" value="/dev/video0" />
+		 <param name="camera_info_url" type="string" value="file://$(find uvc_camera)/example.yaml" />
+	 </node-->
+	
+	<node name="Quad_TF" pkg="transform_broadcast" type="transform_broadcast_node" respawn="true" output="screen">
+		<param name="pose_message_name" type="string" value="/ArduPilot/pose_data" />
+	</node>
+</launch>

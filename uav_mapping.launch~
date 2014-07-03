@@ -1,0 +1,38 @@
+<launch>
+	<machine name="Ground_Station" address="10.0.0.6" />
+	<machine name="Quad" address="10.0.0.14" user="ubuntu" env-loader="/home/ubuntu/catkin_ws/devel/env.sh"/>
+
+	
+	<node machine="Ground_Station" name = "QGC_Bridge" pkg = "qgc_ros_bridge" type = "qgc_ros_bridge_node" output = "screen">
+		<!--remap from="ArduPilot/mav_data" to="mav_data"/-->
+		<param name = "target_ip" value = "10.0.0.18" />	
+	</node>
+	
+	<node machine="Quad" name = "ArduPilot" pkg = "ardu_pilot" type = "ardu_pilot_node" output = "screen" respawn="true" >
+		<param name = "port" value = "/dev/ttyACM1" />
+		<param name = "baud" value = "115200" type = "int" />
+		<!--param name = "log_imu" value = "false" type = "bool" />
+		<param name = "log_gps" value = "false" type = "bool" />
+		<param name = "log_att" value = "true" type = "bool" />
+		<param name = "log_ahrs" value = "false" type = "bool" /-->
+	</node>
+
+	<!--node machine="Quad" name = "ArduPilot_Beagle" pkg = "ardu_pilot" type = "ardu_pilot_node" output = "screen" respawn="true" >
+		<param name = "port" value = "/dev/ttyO1" />
+		<param name = "baud" value = "115200" type = "int" />
+		<param name = "log_imu" value = "false" type = "bool" />
+		<param name = "log_gps" value = "false" type = "bool" />
+		<param name = "log_att" value = "true" type = "bool" />
+		<param name = "log_ahrs" value = "false" type = "bool" />
+	</node-->
+
+	<node machine= "Quad" name="Hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen"> 
+    		<param name="calibrate_time" type="bool" value="false"/>     
+    		<param name="port" type="string" value="/dev/ttyACM0"/> 
+      		<param name="intensity" type="bool" value="false"/>
+  	</node>
+	
+	<node machine="Ground_Station" name="Quad_TF" pkg="transform_broadcast" type="transform_broadcast_node" respawn="true" output="screen">
+		<param name="pose_message_name" type="string" value="/ArduPilot/pose_data" />
+	</node>
+</launch>

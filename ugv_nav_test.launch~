@@ -1,0 +1,27 @@
+<launch>
+	<machine name="Ground_Station" address="10.0.0.4" />	
+	<node machine="Ground_Station" name = "QGC_Bridge" pkg = "qgc_ros_bridge" type = "qgc_ros_bridge_node" output = "screen">
+		<param name = "target_ip" value = "10.0.0.3" />	
+	</node>
+	
+
+	<node machine="Ground_Station" name = "ArduPilot_1" pkg = "ardu_pilot" type = "ardu_pilot_node" output = "screen">
+		<param name = "port" value = "/dev/ttyACM1" />
+		<param name = "baud" value = "115200" type = "int" />
+		<param name = "log_imu" value = "true" type = "bool" />
+		<param name = "log_gps" value = "true" type = "bool" />
+		<param name = "log_att" value = "true" type = "bool" />
+		<param name = "log_ahrs" value = "false" type = "bool" />
+	</node>
+
+	<node machine= "Ground_Station" name="Hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen">
+  
+    	<!-- Starts up faster, but timestamps will be inaccurate. --> 
+    		<param name="calibrate_time" type="bool" value="false"/>     
+    	<!-- Set the port to connect to here -->
+    		<param name="port" type="string" value="/dev/ttyACM2"/> 
+      		<param name="intensity" type="bool" value="false"/>
+  	</node>
+  
+	
+</launch>

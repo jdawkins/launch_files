@@ -1,0 +1,42 @@
+<launch>
+	<machine name="Base_Station" address="basestation" />
+	<machine name="Koala" address="koala" user="nrl" env-loader="/home/nrl/catkin_ws/devel/env.sh"/>	
+
+	<node machine="Koala" name = "Koala" pkg = "koala" type ="koala_node">
+		<param name = "port" value="/dev/ttyS0" />
+		<param name = "baud" value="38400" />
+	</node>
+
+	<node machine="Base_Station" name = "Joystick" pkg = "joy" type = "joy_node">
+		<param name= "dev" value="/dev/input/js1" />
+		<param name= "deadzone" value="0.05" />
+		<param name= "auto_repeat_rate" value="0" />
+		<param name= "coalesce_interval" value="0.001" />;
+	</node>
+
+	<node machine="Koala" pkg="usb_cam" type="usb_cam_node" name="usb_cam" respawn="true">
+		<param name="video_device" value="/dev/video0" />
+		<param name="io_method" value="mmap" />
+		<param name="image_width" value="160" />
+		<param name="image_height" value="120" />
+		<param name="framerate" value="30" />
+		<param name="pixel_format" value="yuyv" />
+		<param name="autofocus" value="true" />
+	</node>
+
+	<!--node machine= "Koala" name="camera_gimbal" pkg="servo_gimbal" type="servo_gimbal_node" respawn="true" output="screen">      
+    		<param name="port" type="string" value="/dev/ttyACM0"/> 
+  	</node-->
+
+	<node machine="Base_Station" name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+	   	<remap from="image" to="/usb_cam/image_raw"/>
+		<param name="autosize" value="false" />
+	</node>
+
+	<!--node machine= "Koala" name="Hokuyo" pkg="hokuyo_node" type="hokuyo_node" respawn="false" output="screen"> 
+    		<param name="calibrate_time" type="bool" value="false"/>     
+    		<param name="port" type="string" value="/dev/ttyACM0"/> 
+      		<param name="intensity" type="bool" value="false"/>
+  	</node-->
+	
+</launch>
